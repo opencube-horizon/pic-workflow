@@ -14,6 +14,7 @@ We provide a DAG to execute Particle-in-Cell simulation, using the [SputniPIC](h
 The main DAG is contained in `pic.py`, we also provide with the following folders:
 - `docker/` contains the `Dockerfile`, along with bash scripts which are included in the image;
 - `misc/` contains various configuration files, used for testing and development;
+- `plot/` contains python scripts to create plots.
 
 ### Installation checklist (see _Setup & Installation_)
 - [ ] Kubernetes: PersistentVolume 
@@ -89,6 +90,29 @@ Before you run the DAG, place the various configuration files for the simulation
 
 Click on "Trigger DAG" in the Apache Airlfow UI to start the DAG with the default parameters. You can customize the DAG parameters to your needs by clicking "Trigger DAG w/ config":
 - `inputlist`: list of experiments, each experiement is the name of the corresponding configuration files, without the `.inp` extension.
+
+## Results analysis (_experimental_)
+
+We provide python scripts to create readable Gantt charts, based on the workflow execution. Note that a Gantt chart can be found for each DAG execution in Apache Airflow UI, however, this chart offers limited interactivity and can be hard to read for complex or long-running DAGs.
+
+Requirements:
+- `python` (&ge; 3.9)
+- python libraries: `plotly`, `requests`
+
+Three scripts are available, each plotting a different Gantt chart:
+- _Resource_ view: each line in the chart represents a slot in a pool (note that multi-slot tasks are not supported)
+- _Task_ view: each line represents a tasks
+- _Multi-execution resource_ view: several DAG runs can be presented on the same Gantt chart, each run has its own color.
+
+Before running those scripts, you need to set the constants in `plot/constants.py`:
+- `BASE_URL`: base URL to access Airflow API
+- `SESSION_COOKIE`: session cookie, can typically be obtained from the Network section of your browser's DevTools when logged in on the Apache Airflow UI
+- `DAG_ID`: the name of the DAG, `autodock`
+- `POOL_ALIAS`: alias names for the various pools, will be shown in the legend
+
+To execute a script for a specific DAG execution, you need to provide `DAG_RUN_ID`, which is the ID of the name of the particular DAG run instance you want to plot, this can be retrieved in Apache Airflow UI.
+
+When running the scripts, figures will be written to the `figures/` folder.
 
 ## Relevant publications
 
