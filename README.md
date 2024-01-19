@@ -97,22 +97,21 @@ We provide python scripts to create readable Gantt charts, based on the workflow
 
 Requirements:
 - `python` (&ge; 3.9)
-- python libraries: `plotly`, `requests`
+- python libraries: `plotly`, `requests`, `pandas`
 
-Three scripts are available, each plotting a different Gantt chart:
+For a specific DAG run, the `plot/plot_gantt.py` script creates two Gantt chart in SVG format:
 - _Resource_ view: each line in the chart represents a slot in a pool (note that multi-slot tasks are not supported)
 - _Task_ view: each line represents a tasks
-- _Multi-execution resource_ view: several DAG runs can be presented on the same Gantt chart, each run has its own color.
+- (REMOVED) _Multi-execution resource_ view: several DAG runs can be presented on the same Gantt chart, each run has its own color.
 
-Before running those scripts, you need to set the constants in `plot/constants.py`:
+Before running this script, some information need to be set in `plot/constants.py`:
 - `BASE_URL`: base URL to access Airflow API
 - `SESSION_COOKIE`: session cookie, can typically be obtained from the Network section of your browser's DevTools when logged in on the Apache Airflow UI
-- `DAG_ID`: the name of the DAG, `autodock`
 - `POOL_ALIAS`: alias names for the various pools, will be shown in the legend
 
-To execute a script for a specific DAG execution, you need to provide `DAG_RUN_ID`, which is the ID of the name of the particular DAG run instance you want to plot, this can be retrieved in Apache Airflow UI.
+The identifier of the DAG and the identifier of the specific DAG run are given as command-line arguments. The script can also plot data from a JSON file, a sample is provided in the `samples/` directory.
 
-When running the scripts, figures will be written to the `figures/` folder.
+When running the script, figures will be written to the `figures/` folder.
 
 ## Relevant publications
 
