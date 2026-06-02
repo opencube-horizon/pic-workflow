@@ -1,0 +1,17 @@
+FROM ghcr.io/opencube-horizon/opencube-pe-ompi:0.6 AS builder
+WORKDIR /pic/
+
+RUN zypper --non-interactive install libhdf5-310-openmpi5 hdf5-devel
+
+RUN git clone https://github.com/KTH-HPC/sputniPIC.git sputniPIC \
+    && cd sputniPIC \
+    && sed -i '1s/^/#include <mpi.h>\n /' src/RW_IO.cpp \
+    && cmake . \
+    && make -j 8 
+
+# create a stripped image, with only required data
+FROM ghcr.io/opencube-horizon/opencube-pe-ompi:0.6
+RUN zypper --non-interactive install libhdf5-310-openmpi5 libhdf5-310
+COPY --from=builder /pic/sputniPIC/sputniPIC_CPU.out /pic/sputniPIC
+COPY --from=builder /pic/sputniPIC/inputfiles        /pic/inputfiles
+COPY scripts /pic/scripts/
